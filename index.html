@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Chúc Mừng Sinh Nhật - Birthday Party</title>
+  <!-- Google Fonts for modern mobile typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Bungee&family=Orbitron:wght@600;800;900&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas pháo hoa / hạt hiệu ứng -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Thanh điều khiển trên cùng (Audio & Controls) -->
+    <header class="top-nav">
+      <button id="btn-back" class="nav-btn hidden" aria-label="Quay lại">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Danh sách</span>
+      </button>
+
+      <div class="brand-title">
+        <span class="sparkle">✨</span>
+        <span class="title-text">HAPPY BIRTHDAY</span>
+        <span class="sparkle">🎈</span>
+      </div>
+
+      <button id="btn-music" class="nav-btn music-btn" aria-label="Bật/Tắt Nhạc Happy Birthday Remix" title="Happy Birthday Remix">
+        <span class="music-icon">🎵</span>
+        <span class="music-waves">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </span>
+      </button>
+    </header>
+
+    <!-- Nhạc nền Happy Birthday Remix -->
+    <audio id="bg-audio" loop preload="auto">
+      <source src="happy-birthday-remix.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- TRANG CHÍNH: DANH SÁCH 8 NGƯỜI CÓ SINH NHẬT -->
+    <main id="home-view" class="view active-view">
+      <!-- Banner chào mừng sinh nhật -->
+      <section class="hero-banner">
+        <div class="floating-decorations">
+          <span class="float-item b1">🎈</span>
+          <span class="float-item b2">🎁</span>
+          <span class="float-item b3">🎂</span>
+          <span class="float-item b4">🎉</span>
+          <span class="float-item b5">⭐</span>
+          <span class="float-item b6">✨</span>
+        </div>
+        <div class="banner-content">
+          <div class="tag-pill">Hội Bạn Thân & Gia Đình</div>
+          <h1 class="main-heading">Đại Tiệc Sinh Nhật</h1>
+          <p class="sub-heading">Chọn một người bạn để gửi trọn niềm vui & lời chúc mừng độc nhất vô nhị!</p>
+        </div>
+      </section>
+
+      <!-- Grid 8 Icon nhân vật sinh nhật -->
+      <section class="grid-section">
+        <div class="cards-grid" id="people-grid">
+          <!-- Render tự động bởi app.js -->
+        </div>
+      </section>
+
+      <footer class="home-footer">
+        <p>❤️ Chúc tất cả các bạn luôn ngập tràn tiếng cười & hạnh phúc!</p>
+      </footer>
+    </main>
+
+    <!-- TRANG CHI TIẾT CHÚC MỪNG SINH NHẬT -->
+    <section id="detail-view" class="view">
+      <div id="detail-container" class="detail-container">
+        <!-- Render động nội dung theo từng phong cách người dùng -->
+      </div>
+    </section>
+
+    <!-- MODAL GỬI LỜI CHÚC TƯƠNG TÁC -->
+    <div id="wish-modal" class="modal-backdrop hidden">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>💌 Gửi Lời Chúc Riêng</h3>
+          <button class="btn-close-modal" id="btn-close-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-tip">Gửi thêm một lời chúc ấm áp đến <strong id="modal-person-name"></strong>:</p>
+          <textarea id="modal-wish-input" placeholder="Nhập lời chúc từ tận đáy lòng của bạn..." rows="3"></textarea>
+          
+          <div class="quick-wishes">
+            <span class="quick-tag" data-text="Chúc bạn tuổi mới luôn rực rỡ, thành công và vạn sự như ý! 🎉">Vạn sự như ý 🌟</span>
+            <span class="quick-tag" data-text="Tuổi mới phát tài phát lộc, tiền vô như nước, tình duyên thăng hoa! 💰">Phát tài phát lộc 💰</span>
+            <span class="quick-tag" data-text="Mãi giữ ngọn lửa nhiệt huyết, đam mê và luôn tràn đầy năng lượng tích cực! 🔥">Nhiệt huyết đam mê 🔥</span>
+          </div>
+
+          <button id="btn-send-wish" class="btn-primary-action">
+            <span>Bắn Pháo Hoa & Gửi Lời Chúc!</span> 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông báo nổi Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
