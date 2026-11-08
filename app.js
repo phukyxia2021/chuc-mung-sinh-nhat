@@ -277,16 +277,21 @@ class SoundFX {
       this.bgAudio.loop = loop;
       const promise = this.bgAudio.play();
       if (promise !== undefined) {
-        promise.then(() => {
+        return promise.then(() => {
           this.isPlaying = true;
           updateMusicButtonUI();
+          return true;
         }).catch(err => {
-          console.warn("Direct play blocked or error, falling back to synth:", err);
-          this.playHappyBirthdaySynth(loop);
+          console.warn("Direct play blocked or error:", err);
+          return Promise.reject(err);
         });
       }
+      this.isPlaying = true;
+      updateMusicButtonUI();
+      return Promise.resolve(true);
     } else {
       this.playHappyBirthdaySynth(loop);
+      return Promise.resolve(true);
     }
   }
 
@@ -868,14 +873,52 @@ function showToast(message) {
 }
 
 // ==========================================
-// 6. KHỞI TẠO ỨNG DỤNG
+// 6. KHỞI TẠO ỨNG DỤNG & TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY)
 // ==========================================
+function startAutoplay() {
+  sound.init();
+
+  // Thử tự động phát ngay khi trang vừa tải
+  const playPromise = sound.playHappyBirthday(true);
+
+  if (playPromise && playPromise.then) {
+    playPromise.then(() => {
+      showToast("🎵 Đang phát: Happy Birthday Remix 🔥");
+    }).catch(() => {
+      // Trình duyệt (Chrome, Safari, iOS, Android) chặn autoplay có tiếng khi chưa có tương tác
+      // Lắng nghe tương tác đầu tiên của người dùng (chạm, click, bấm phím) để phát nhạc ngay lập tức
+      const triggerPlayOnFirstGesture = () => {
+        if (!sound.isPlaying) {
+          sound.playHappyBirthday(true).then(() => {
+            showToast("🎵 Đang phát: Happy Birthday Remix 🔥");
+          }).catch(err => console.warn("Gesture play error:", err));
+        }
+        removeGestureListeners();
+      };
+
+      const removeGestureListeners = () => {
+        ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt => {
+          document.removeEventListener(evt, triggerPlayOnFirstGesture);
+        });
+      };
+
+      ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt => {
+        document.addEventListener(evt, triggerPlayOnFirstGesture, { once: true, passive: true });
+      });
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderPeopleGrid();
 
-  // Bật/tắt âm thanh
+  // Bật/tắt âm thanh bằng nút điều khiển
   const btnMusic = document.getElementById('btn-music');
-  btnMusic.addEventListener('click', () => {
+  btnMusic.addEventListener('click', (e) => {
+    e.stopPropagation();
     sound.toggleMusic();
   });
+
+  // Tự động phát nhạc Happy Birthday Remix khi mở trang
+  startAutoplay();
 });
