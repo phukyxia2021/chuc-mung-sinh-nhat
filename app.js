@@ -175,6 +175,7 @@ class SoundFX {
     this.compressor = null;
     this.isBassBoost = true;
     this.currentTrackName = "Vũ Trường Vinahouse (VN88)";
+    this.currentTrackMode = "VŨ TRƯỜNG";
   }
 
   init() {
@@ -256,16 +257,18 @@ class SoundFX {
     }
   }
 
-  switchTrack(trackSrc, trackName) {
+  switchTrack(trackSrc, trackName, trackMode) {
     this.init();
     if (!this.bgAudio) return;
     const wasPlaying = this.isPlaying;
     this.currentTrackName = trackName || "Happy Birthday Remix";
+    this.currentTrackMode = trackMode || "VŨ TRƯỜNG";
     this.bgAudio.src = trackSrc;
     this.bgAudio.load();
     if (wasPlaying) {
       this.playHappyBirthday(true);
     }
+    updateDJDisplay();
     showToast(`🎛️ Đã chuyển sang: ${this.currentTrackName} 🔥 Quẩy lên!`);
   }
 
@@ -460,6 +463,22 @@ function updateMusicButtonUI() {
       appContainer.classList.add('club-lights');
     } else {
       appContainer.classList.remove('club-lights');
+    }
+  }
+  updateDJDisplay();
+}
+
+function updateDJDisplay() {
+  const elName = document.getElementById('dj-now-playing');
+  const elMode = document.getElementById('dj-mode-tag');
+  const liveDot = document.querySelector('.live-dot');
+  if (elName) elName.textContent = sound.currentTrackName;
+  if (elMode && sound.currentTrackMode) elMode.textContent = sound.currentTrackMode;
+  if (liveDot) {
+    if (sound.isPlaying) {
+      liveDot.classList.add('playing');
+    } else {
+      liveDot.classList.remove('playing');
     }
   }
 }
@@ -1004,16 +1023,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bộ chọn bài nhạc DJ BAR
-  const djChips = document.querySelectorAll('.dj-chip');
-  djChips.forEach(chip => {
-    chip.addEventListener('click', (e) => {
+  // Bộ chọn bài nhạc DJ BAR (Mobile Tabs)
+  const djTabs = document.querySelectorAll('.dj-tab, .dj-chip');
+  djTabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
       e.stopPropagation();
-      djChips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      const trackSrc = chip.getAttribute('data-track');
-      const trackName = chip.getAttribute('data-name');
-      sound.switchTrack(trackSrc, trackName);
+      djTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const trackSrc = tab.getAttribute('data-track');
+      const trackName = tab.getAttribute('data-name');
+      const trackMode = tab.getAttribute('data-mode') || 'REMIX';
+      sound.switchTrack(trackSrc, trackName, trackMode);
     });
   });
 
