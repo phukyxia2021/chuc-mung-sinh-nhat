@@ -162,7 +162,7 @@ const PEOPLE_DATA = [
 ];
 
 // ==========================================
-// 2. NHẠC NỀN & HIỆU ỨNG ÂM THANH (HAPPY BIRTHDAY REMIX)
+// 2. NHẠC NỀN & HIỆU ỨNG ÂM THANH (VŨ TRƯỜNG & BAR CLUB REMIX)
 // ==========================================
 class SoundFX {
   constructor() {
@@ -170,6 +170,11 @@ class SoundFX {
     this.isPlaying = false;
     this.bgAudio = null;
     this.melodyTimeout = null;
+    this.audioSourceNode = null;
+    this.bassFilter = null;
+    this.compressor = null;
+    this.isBassBoost = true;
+    this.currentTrackName = "Vũ Trường Vinahouse (VN88)";
   }
 
   init() {
@@ -186,7 +191,7 @@ class SoundFX {
     if (!this.bgAudio) {
       this.bgAudio = document.getElementById('bg-audio');
       if (this.bgAudio) {
-        this.bgAudio.volume = 0.8;
+        this.bgAudio.volume = 0.9;
         this.bgAudio.addEventListener('play', () => {
           this.isPlaying = true;
           updateMusicButtonUI();
@@ -203,6 +208,65 @@ class SoundFX {
         });
       }
     }
+
+    this.setupBassNodes();
+  }
+
+  setupBassNodes() {
+    if (!this.bgAudio || !this.ctx || this.audioSourceNode) return;
+    try {
+      this.audioSourceNode = this.ctx.createMediaElementSource(this.bgAudio);
+
+      // Low-shelf filter tăng dải trầm 110Hz (+10dB) tạo độ rung chuyển như loa Sub Bar/Vũ trường
+      this.bassFilter = this.ctx.createBiquadFilter();
+      this.bassFilter.type = 'lowshelf';
+      this.bassFilter.frequency.value = 110;
+      this.bassFilter.gain.value = this.isBassBoost ? 10 : 0;
+
+      // Dynamics Compressor nén âm thanh cho tiếng đập chắc nịch, punchy
+      this.compressor = this.ctx.createDynamicsCompressor();
+      this.compressor.threshold.value = -16;
+      this.compressor.knee.value = 12;
+      this.compressor.ratio.value = 8;
+      this.compressor.attack.value = 0.003;
+      this.compressor.release.value = 0.25;
+
+      this.audioSourceNode.connect(this.bassFilter);
+      this.bassFilter.connect(this.compressor);
+      this.compressor.connect(this.ctx.destination);
+    } catch (e) {
+      console.warn("Audio node setup fallback to direct output:", e);
+    }
+  }
+
+  toggleBassBoost() {
+    this.isBassBoost = !this.isBassBoost;
+    if (this.bassFilter) {
+      this.bassFilter.gain.value = this.isBassBoost ? 10 : 0;
+    }
+    const btnBass = document.getElementById('btn-bass');
+    if (btnBass) {
+      if (this.isBassBoost) {
+        btnBass.classList.add('active');
+        showToast("🔊 Siêu trầm BASS BOOST: BẬT! Đập rung màn hình! 💥");
+      } else {
+        btnBass.classList.remove('active');
+        showToast("🔉 BASS BOOST: ĐÃ TẮT");
+      }
+    }
+  }
+
+  switchTrack(trackSrc, trackName) {
+    this.init();
+    if (!this.bgAudio) return;
+    const wasPlaying = this.isPlaying;
+    this.currentTrackName = trackName || "Happy Birthday Remix";
+    this.bgAudio.src = trackSrc;
+    this.bgAudio.load();
+    if (wasPlaying) {
+      this.playHappyBirthday(true);
+    }
+    showToast(`🎛️ Đã chuyển sang: ${this.currentTrackName} 🔥 Quẩy lên!`);
   }
 
   // Tiếng Beep nốt nhạc
@@ -373,7 +437,7 @@ class SoundFX {
       showToast("🔇 Đã tạm dừng nhạc!");
     } else {
       this.playHappyBirthday(true);
-      showToast("🎵 Đang phát: Happy Birthday Remix 🔥");
+      showToast(`🔥 Đang phát: ${this.currentTrackName} 💥`);
     }
     updateMusicButtonUI();
   }
@@ -383,10 +447,20 @@ const sound = new SoundFX();
 
 function updateMusicButtonUI() {
   const btnMusic = document.getElementById('btn-music');
-  if (sound.isPlaying) {
-    btnMusic.classList.add('music-playing');
-  } else {
-    btnMusic.classList.remove('music-playing');
+  const appContainer = document.querySelector('.app-container');
+  if (btnMusic) {
+    if (sound.isPlaying) {
+      btnMusic.classList.add('music-playing');
+    } else {
+      btnMusic.classList.remove('music-playing');
+    }
+  }
+  if (appContainer) {
+    if (sound.isPlaying) {
+      appContainer.classList.add('club-lights');
+    } else {
+      appContainer.classList.remove('club-lights');
+    }
   }
 }
 
@@ -883,14 +957,14 @@ function startAutoplay() {
 
   if (playPromise && playPromise.then) {
     playPromise.then(() => {
-      showToast("🎵 Đang phát: Happy Birthday Remix 🔥");
+      showToast(`🔥 Đang phát: ${sound.currentTrackName} 💥`);
     }).catch(() => {
       // Trình duyệt (Chrome, Safari, iOS, Android) chặn autoplay có tiếng khi chưa có tương tác
       // Lắng nghe tương tác đầu tiên của người dùng (chạm, click, bấm phím) để phát nhạc ngay lập tức
       const triggerPlayOnFirstGesture = () => {
         if (!sound.isPlaying) {
           sound.playHappyBirthday(true).then(() => {
-            showToast("🎵 Đang phát: Happy Birthday Remix 🔥");
+            showToast(`🔥 Đang phát: ${sound.currentTrackName} 💥`);
           }).catch(err => console.warn("Gesture play error:", err));
         }
         removeGestureListeners();
@@ -914,9 +988,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Bật/tắt âm thanh bằng nút điều khiển
   const btnMusic = document.getElementById('btn-music');
-  btnMusic.addEventListener('click', (e) => {
-    e.stopPropagation();
-    sound.toggleMusic();
+  if (btnMusic) {
+    btnMusic.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sound.toggleMusic();
+    });
+  }
+
+  // Nút BASS BOOST siêu trầm phong cách Vũ trường / Quán Bar
+  const btnBass = document.getElementById('btn-bass');
+  if (btnBass) {
+    btnBass.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sound.toggleBassBoost();
+    });
+  }
+
+  // Bộ chọn bài nhạc DJ BAR
+  const djChips = document.querySelectorAll('.dj-chip');
+  djChips.forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      djChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const trackSrc = chip.getAttribute('data-track');
+      const trackName = chip.getAttribute('data-name');
+      sound.switchTrack(trackSrc, trackName);
+    });
   });
 
   // Tự động phát nhạc Happy Birthday Remix khi mở trang

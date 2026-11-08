@@ -13,7 +13,12 @@ Trang web chúc mừng sinh nhật được tối ưu hoàn hảo cho nền tả
 8. **Hưng Nguyễn**: Phong cách Sửa xe máy - Cờ lê mỏ lết gõ nhịp điệu, bugi nẹt tia lửa điện, máy nổ êm ru giòn giã.
 
 ## 🚀 Các tính năng tương tác độc đáo:
-- **Nhạc nền Happy Birthday Remix 🎵**: Phát bản nhạc **Happy Birthday Remix** sôi động, khuấy động không khí tiệc sinh nhật (kèm bộ hiệu ứng sóng nhạc và tự động fallback nếu cần). Người dùng có thể dễ dàng thay đổi bài nhạc bằng cách chép file nhạc mong muốn vào thư mục với tên `happy-birthday-remix.mp3`.
+- **Nhạc Remix Vũ Trường & Quán Bar Cực Mạnh 🎛️**:
+  - **Vũ Trường Vinahouse (VN88 DJ Club)**: Nhịp trống dồn dập, bass căng đét đập tức ngực đúng chuẩn bar vũ trường Việt Nam.
+  - **Quán Bar Electro (Nicola Fasano Club Mix)**: Bản remix huyền thoại tại các vũ trường & quán bar thế giới.
+  - **EDM Festival Remix**: Nhịp điệu lễ hội âm nhạc EDM sôi động.
+  - **Bộ kích âm Siêu Trầm BASS BOOST 🔊**: Tích hợp bộ lọc Low-Shelf Filter + Dynamics Compressor qua Web Audio API, tăng cường dải bass rung chuyển loa/tai nghe.
+  - **Hiệu ứng ánh sáng Vũ trường (Club Lighting) 🎆**: Đèn laser và ánh sáng neon chuyển động huyền ảo theo nhạc tiệc tùng.
 - **Thổi nến sinh nhật 🎂**: Nhấp vào nến bánh kem để thổi tắt nến, khói bay lên, phát nhạc Happy Birthday Remix và bắn pháo hoa!
 - **Hiệu ứng âm thanh chân thực 🔊**: Âm thanh thổi nến (whoosh), pháo hoa bùng nổ, click pop sống động.
 - **Nút tương tác ngành nghề ⚡**: Mỗi người có 1 nút bấm độc quyền để kích hoạt hiệu ứng nghề nghiệp sống động.

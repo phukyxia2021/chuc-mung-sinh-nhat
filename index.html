@@ -31,15 +31,38 @@
         <span class="sparkle">🎈</span>
       </div>
 
-      <button id="btn-music" class="nav-btn music-btn" aria-label="Bật/Tắt Nhạc Happy Birthday Remix" title="Happy Birthday Remix">
-        <span class="music-icon">🎵</span>
-        <span class="music-waves">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </span>
-      </button>
+      <div class="nav-actions">
+        <button id="btn-bass" class="nav-btn bass-btn active" title="Bật/Tắt Siêu Trầm Bass Boost">
+          <span class="bass-icon">🔊</span>
+          <span class="bass-text">BASS</span>
+        </button>
+
+        <button id="btn-music" class="nav-btn music-btn" aria-label="Bật/Tắt Nhạc Happy Birthday Remix" title="Happy Birthday Remix">
+          <span class="music-icon">🎵</span>
+          <span class="music-waves">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </span>
+        </button>
+      </div>
     </header>
+
+    <!-- DJ Bar: Chọn thể loại nhạc Vũ Trường / Quán Bar -->
+    <div class="dj-track-bar">
+      <span class="dj-label">🎛️ DJ BAR:</span>
+      <div class="dj-chips">
+        <button class="dj-chip active" data-track="happy-birthday-remix.mp3" data-name="Vũ Trường Vinahouse (VN88)" title="Vinahouse Vũ Trường Việt Nam cực căng">
+          🔥 Vũ Trường Vinahouse
+        </button>
+        <button class="dj-chip" data-track="happy-birthday-bar-club.mp3" data-name="Quán Bar Electro (Nicola Fasano)" title="Nicola Fasano Club Mix quốc tế">
+          🍸 Quán Bar Electro
+        </button>
+        <button class="dj-chip" data-track="happy-birthday-edm.mp3" data-name="EDM Party Festival" title="EDM Party Festival sôi động">
+          ⚡ EDM Festival
+        </button>
+      </div>
+    </div>
 
     <!-- Nhạc nền Happy Birthday Remix -->
     <audio id="bg-audio" loop preload="auto" autoplay>
